@@ -5,12 +5,14 @@ Class Demo.RGateway
 /// Description
 ClassMethod RunEval() As %Status
 {
+	// Get a gateway instance
     set gateway = ##class(%Net.Remote.Gateway).%New()
     set tSC = gateway.%Connect("r",55554)
 	if $$$ISERR(tSC) quit
-		
-	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection")
 	
+	// Bind the gateway to the Rserve
+	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection")
+
 	// Run a random R command
     zw c.eval("R.version$version.string").asString()
 
@@ -74,7 +76,7 @@ ClassMethod FromSQLOnIris()
 	quit
 }
 
-Method FromCSVOnRServe()
+ClassMethod FromCSVOnRServe()
 {
     set gateway = ##class(%Net.Remote.Gateway).%New()
     set tSC = gateway.%Connect("r",55554)
