@@ -4,16 +4,18 @@ This repository is a template of how to use the new R gateway for IRIS 2021.1.
 
 The achitecture of this template is as follow :
 
-![architecture](https://raw.githubusercontent.com/grongierisc/iris-r-gateway-template/master/misc/architecture.png)
+![architecture](https://raw.githubusercontent.com/grongierisc/iris-r-gateway-template/main/misc/architecture.png)
 
 There is two container :
 
 - one for IRIS
 - one for R and is Server
 
-Both container share the same datas : abalone.csv
+Both container share the same data : 
 
-This file is loaded as a table in IRIS : Test.Data.
+- abalone.csv
+
+This file is loaded as a table in IRIS : Test.Data
 
 The R container have an script for demonstration purpose.
 
@@ -209,3 +211,21 @@ ClassMethod FromCSVOnRServe()
 }
 ```
 
+# Another R Gateway
+
+You can have a look at this R Gateway for IRIS :
+
+https://github.com/intersystems-community/RGateway
+
+This one doesn't use the java gateway and use a direct connection between IRIS and R Server.
+
+Exemple :
+
+```objectscript
+Set c = ##class(R.RConnection).%New() // Create a R client
+Set x = ##class(R.REXPDouble).%New(3.0) // A single double value
+Do c.assign("x", x) // Assign the value to R variable x
+Do c.eval("y<-sqrt(x)") // Evaluate R script
+Set y = c.get("y") // Get the value of R variable y
+Write y.toJSON().%ToJSON()
+```
