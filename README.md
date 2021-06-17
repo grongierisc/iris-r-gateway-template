@@ -2,20 +2,22 @@
 
 This repository is a template of how to use the new R gateway for IRIS 2021.1.
 
-The achitecture of this template is as follow :
+The architecture of this template is as follow :
 
 ![architecture](https://raw.githubusercontent.com/grongierisc/iris-r-gateway-template/main/misc/architecture.png)
 
 There is two container :
 
 - one for IRIS
-- one for R and is Server
+- one for R and RServer
 
 Both container share the same data : 
 
 - abalone.csv
 
-This file is loaded as a table in IRIS : Test.Data
+This file is loaded as a table in IRIS : 
+
+- Test.Data
 
 The R container have an script for demonstration purpose.
 
