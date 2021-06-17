@@ -6,12 +6,12 @@ The architecture of this template is as follow :
 
 ![architecture](https://raw.githubusercontent.com/grongierisc/iris-r-gateway-template/main/misc/architecture.png)
 
-There is two container :
+There is two containers :
 
 - one for IRIS
 - one for R and RServer
 
-Both container share the same data : 
+Both containers share the same data : 
 
 - abalone.csv
 
