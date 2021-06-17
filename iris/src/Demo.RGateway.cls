@@ -58,17 +58,22 @@ ClassMethod FromSQLOnIris()
 		
 	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection")
 	
+	// SQL Query
 	set q = "select length from Test.Data"
 	set resultSet = ##class(%SQL.Statement).%ExecDirect( , .q)
 
+	// Prepare R vector
  	do c.eval("l = c()")
  	while resultSet.%Next() {
+		 // Append resultSet to the R vector
  		do c.assign("x", ##class(%Net.Remote.Object).%New(gateway, "org.rosuda.REngine.REXPDouble", resultSet.Length))
  		do c.eval("l = append(l, c(x))")
  	}
  	
+	// Produce mean from R
 	zw "mean = " _c.eval("mean(l)").asString()
-	
+
+	// Produce median from R
 	zw "median = "_c.eval("median(l)").asString()
 
 	do:c'="" c.close()
@@ -85,8 +90,11 @@ ClassMethod FromCSVOnRServe()
 	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection")
 	
 	set filename = "/tmp/data/abalone.csv"
+	// assign an R variable for the script file 
 	do c.assign("filename", filename)
+	// Read the file from the R server
 	do c.eval("data = read.csv(filename)")
+
 	zw "mean = "_c.eval("mean(data$Length)").asString()
  		
 	zw "median = "_c.eval("median(data$Length)").asString()
@@ -99,11 +107,15 @@ ClassMethod FromCSVOnRServe()
 	
 	do c.assign("dir", "/tmp/data")
 
+	// produce plot PNG
 	do c.eval("createHistPNG(data$Rings, dir, ""Rings"")")
-	
+	zw "plot produced in /tmp/data/hist.png"
+	// produce plot JPG
 	do c.eval("createHistJPG(data$Rings, dir, ""Rings"")")
-	
+	zw "plot produced in /tmp/data/hist.jpeg"
+	// produce plot PDF
 	do c.eval("createHistPDF(data$Rings, dir, ""Rings"")")
+	zw "plot produced in /tmp/data/hist.pdf"
 	
 	do:c'="" c.close()
 	do:gateway'="" gateway.%Disconnect()
