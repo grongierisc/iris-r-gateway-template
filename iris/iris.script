@@ -6,5 +6,5 @@ set $namespace="%SYS", name="DefaultSSL" do:'##class(Security.SSLConfigs).Exists
 
 zn "USER"
 do $System.OBJ.LoadDir("/opt/irisapp/src","ck",,1)
-do ##class(community.csvgen).Generate("/opt/irisapp/data/abalone.csv",",","RTest.abalone")
+do ##class(community.csvgen).Generate("/opt/irisapp/data/abalone.csv",",","Test.Data")
 

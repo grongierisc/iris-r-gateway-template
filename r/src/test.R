@@ -3,6 +3,9 @@ getMode <- function(x) {
   l[which.max(tabulate(match(x, l)))]
 }
 
+getLength <- function(x) {
+  length(x)
+}
 
 createHistJPG <- function(data, dir, label) {
   dir2 = paste(dir, "/hist.jpeg", sep="")
