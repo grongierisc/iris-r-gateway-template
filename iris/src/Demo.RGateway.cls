@@ -2,16 +2,24 @@
 Class Demo.RGateway
 {
 
+Parameter JGWHOST = "jgw";
+
+Parameter JGWPORT =  55554;
+
+Parameter RHOST = "r";
+
+Parameter RPORT = 6311;
+
 /// Description
 ClassMethod RunEval() As %Status
 {
 	// Get a gateway instance
     set gateway = ##class(%Net.Remote.Gateway).%New()
-    set tSC = gateway.%Connect("r",55554)
+    set tSC = gateway.%Connect(..#JGWHOST, ..#JGWPORT)
 	if $$$ISERR(tSC) quit
 	
 	// Bind the gateway to the Rserve
-	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection")
+	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection", ..#RHOST, ..#RPORT)
 
 	// Run a random R command
     zw c.eval("R.version$version.string").asString()
@@ -23,11 +31,11 @@ ClassMethod RunScript() As %Status
 {
 	// Get a gateway instance
     set gateway = ##class(%Net.Remote.Gateway).%New()
-    set tSC = gateway.%Connect("r",55554)
+    set tSC = gateway.%Connect(..#JGWHOST, ..#JGWPORT)
 	if $$$ISERR(tSC) quit
 	
 	// Bind the gateway to the Rserve
-	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection")
+	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection", ..#RHOST, ..#RPORT)
 	
 	// create a list
 	set l = ##class(%Net.Remote.Object).%New(gateway, "org.rosuda.REngine.RList")
@@ -53,10 +61,10 @@ ClassMethod RunScript() As %Status
 ClassMethod FromSQLOnIris()
 {
     set gateway = ##class(%Net.Remote.Gateway).%New()
-    set tSC = gateway.%Connect("r",55554)
+    set tSC = gateway.%Connect(..#JGWHOST, ..#JGWPORT)
 	if $$$ISERR(tSC) quit
 		
-	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection")
+	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection", ..#RHOST, ..#RPORT)
 	
 	// SQL Query
 	set q = "select length from Test.Data"
@@ -84,10 +92,10 @@ ClassMethod FromSQLOnIris()
 ClassMethod FromCSVOnRServe()
 {
     set gateway = ##class(%Net.Remote.Gateway).%New()
-    set tSC = gateway.%Connect("r",55554)
+    set tSC = gateway.%Connect(..#JGWHOST, ..#JGWPORT)
 	if $$$ISERR(tSC) quit
 		
-	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection")
+	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection", ..#RHOST, ..#RPORT)
 	
 	set filename = "/tmp/data/abalone.csv"
 	// assign an R variable for the script file 

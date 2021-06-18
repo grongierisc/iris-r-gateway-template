@@ -10,10 +10,16 @@ services:
     volumes:
       - ./iris/:/irisdev/app
       - ./data/:/tmp/data
-  r:
+  jgw:
     build: 
-      context: r
+      context: jgw
       dockerfile: dockerfile
+    restart: always
+    ports: 
+      - 55554:55554
+
+  r:
+    image: ubcctlt/rserve
     restart: always
     ports:
       - 6311:6311
