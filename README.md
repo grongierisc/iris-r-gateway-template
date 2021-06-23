@@ -1,17 +1,20 @@
 # iris-r-gateway-template
 
-This repository is a template of how to use the new R gateway for IRIS 2021.1.
+This repository is a template for using the new R gateway for IRIS 2021.1.
 
-The architecture of this template is as follow :
+The architecture of this template is as follows:
 
 ![architecture](https://raw.githubusercontent.com/grongierisc/iris-r-gateway-template/main/misc/architecture.png)
 
-There is two containers :
 
-- one for IRIS
-- one for R and RServer
+It is composed of three containers, with one for:
+- IRIS
+- R and RServe
+- A Java Gateway
 
-Both containers share the same data : 
+Iris and the R server will discuss through the java gateway. 
+
+These first two containers are bound to the `data/` local folder, and so have access to the same data: 
 
 - abalone.csv
 
@@ -19,9 +22,9 @@ This file is loaded as a table in IRIS :
 
 - Test.Data
 
-The R container have an script for demonstration purpose.
+The R container also has access to the `r/` folder, and in it is the following script:
 
- - test.R
+- test.R
 
 ```R
 getMode <- function(x) {
@@ -90,16 +93,18 @@ ClassMethod RunEval() As %Status
 {
 	// Get a gateway instance
     set gateway = ##class(%Net.Remote.Gateway).%New()
-    set tSC = gateway.%Connect("r",55554)
+    set tSC = gateway.%Connect(..#JGWHOST, ..#JGWPORT)
 	if $$$ISERR(tSC) quit
 	
 	// Bind the gateway to the Rserve
-	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection")
+	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection", ..#RHOST, ..#RPORT)
 
 	// Run a random R command
     zw c.eval("R.version$version.string").asString()
 
-    Return tSC
+    do:c'="" c.close()
+	do:gateway'="" gateway.%Disconnect()
+	quit
 }
 ```
 
@@ -151,7 +156,7 @@ ClassMethod FromSQLOnIris()
 }
 ```
 
-### Run R Script and produce plot
+### Run R Script and plot
 
 ```objectscript
 do ##class(Demo.RGateway).FromCSVOnRServe()
@@ -174,29 +179,32 @@ code :
 ClassMethod FromCSVOnRServe()
 {
     set gateway = ##class(%Net.Remote.Gateway).%New()
-    set tSC = gateway.%Connect("r",55554)
+    set tSC = gateway.%Connect(..#JGWHOST, ..#JGWPORT)
 	if $$$ISERR(tSC) quit
 		
-	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection")
+	set c = ##class(%Net.Remote.Object).%ClassMethod(.gateway,"com.intersystems.rgateway.Helper","createRConnection", ..#RHOST, ..#RPORT)
 	
+	// Read a file from R
+	// assign an R variable for the data file 
 	set filename = "/tmp/data/abalone.csv"
-	// assign an R variable for the script file 
 	do c.assign("filename", filename)
 	// Read the file from the R server
 	do c.eval("data = read.csv(filename)")
 
 	zw "mean = "_c.eval("mean(data$Length)").asString()
- 		
 	zw "median = "_c.eval("median(data$Length)").asString()
  		
-	// call function from r script
+	// Call function from R script
+	// assign an R variable for the script file 
 	do c.assign("rFile", "/tmp/r/src/test.R")
 	do c.eval("source(rFile)") 
  		
 	zw "mode = "_c.eval("getMode(data$Length)").asString()
 	
-	do c.assign("dir", "/tmp/data")
 
+	// Plot graphs
+	// assign a directory to save files
+	do c.assign("dir", "/tmp/data")
 	// produce plot PNG
 	do c.eval("createHistPNG(data$Rings, dir, ""Rings"")")
 	zw "plot produced in /tmp/data/hist.png"
