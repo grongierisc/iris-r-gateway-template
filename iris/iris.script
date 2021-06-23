@@ -1,12 +1,10 @@
 zn "USER"
 zpm "install csvgen"
+do $System.OBJ.LoadDir("/opt/irisapp/src","ck",,1)
+do ##class(community.csvgen).Generate("/opt/irisapp/data/abalone.csv",",","Test.Data")
 
 zn "%SYS"
 do ##class(SYS.Container).QuiesceForBundling()
 do ##class(Security.Users).UnExpireUserPasswords("*")
-
-zn "USER"
-do $System.OBJ.LoadDir("/opt/irisapp/src","ck",,1)
-do ##class(community.csvgen).Generate("/opt/irisapp/data/abalone.csv",",","Test.Data")
 
 halt
