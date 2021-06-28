@@ -2,22 +2,21 @@ version: '3.6'
 services:
   iris:
     build: 
-      context: iris
+      context: ./iris
       dockerfile: dockerfile
     restart: always
     ports: 
       - 52773:52773
     volumes:
-      - ./iris/:/irisdev/app
+      - ./iris/:/opt/irisapp
       - ./data/:/tmp/data
   jgw:
     build: 
-      context: jgw
+      context: ./jgw
       dockerfile: dockerfile
     restart: always
     ports: 
       - 55554:55554
-
   r:
     image: ubcctlt/rserve
     restart: always
