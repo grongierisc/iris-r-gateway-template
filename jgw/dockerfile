@@ -5,7 +5,7 @@ ENV PORT 55554
 ENV ISC_PACKAGE_INSTALLDIR /usr/irissys
 ENV ISC_JARDIR $ISC_PACKAGE_INSTALLDIR/dev/java/lib/JDK18
 
-COPY --from=store/intersystems/iris-ml-community:2021.1.0.215.0 \
+COPY --from=store/intersystems/iris-ml-community:latest \
       $ISC_JARDIR/intersystems-jdbc-3.2.0.jar \
       $ISC_JARDIR/intersystems-utils-3.2.0.jar \
       $ISC_JARDIR/intersystems-rgateway-3.2.0.jar \
